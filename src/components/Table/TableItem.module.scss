@@ -1,0 +1,104 @@
+.countryInfo {
+  background-color: #E0F7FA;
+  padding: 0.3125rem 0;
+
+  &:nth-of-type(even) {
+    background-color: #B2EBF2;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1.5px solid white;
+  }
+
+
+  &Caption {
+    display: flex;
+    align-items: center;
+    margin-left: 0.4375rem;
+    margin-bottom: 0.3125rem;
+
+
+    &Flag {
+      width: 27px;
+      height: 16px;
+    }
+
+    &Name {
+      font-weight: 400;
+      font-size: 0.8125rem;
+      margin-left: 0.3125rem;
+      margin-right: .2rem;
+      color: #616161;
+
+      span {
+        font-size: 0.6rem;
+      }
+
+      @media only screen and (max-width: 31.25em) {
+        font-size: 0.6875rem;
+      }
+    }
+
+    &Nav {
+      font-weight: 500;
+      font-size: 0.75rem;
+      margin-left: 0.4375rem;
+
+      @media only screen and (max-width: 31.25em) {
+        font-size: 0.625rem;
+      }
+
+      span {
+        color: #66BB6A;
+
+        &:not(:last-of-type) {
+          color: #EF5350;
+        }
+      }
+    }
+  }
+
+
+  &Details {
+
+    &Data {
+      @extend .countryInfoCaptionNav;
+    }
+  }
+}
+
+.countryInfoDark {
+  @extend .countryInfo;
+  background-color: rgb(40, 42, 65);
+  padding: 0.3125rem 0;
+
+  &:nth-of-type(even) {
+    background-color: #121e33;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1.5px solid white;
+  }
+}
+
+
+.countryInfoCaptionNameDark {
+  @extend .countryInfoCaptionName;
+  color: #fff;
+}
+
+.countryInfoDetailsDataDark {
+  @extend .countryInfoDetailsData;
+
+  span {
+    color: #fff !important;
+  }
+}
+
+.countryInfoCaptionNavDark {
+  @extend .countryInfoCaptionNav;
+  
+  span {
+    color: #fff !important;
+  }
+}

@@ -1,0 +1,50 @@
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #64b5f6;
+}
+::-webkit-scrollbar-thumb {
+  background: #0d47a1;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: lighten(#0d47a1, 15);
+}
+
+.wrapper {
+  width: inehrit;
+  height: 600px;
+  background-color: #42a5f5;
+
+  // @media only screen and (max-width: 31.25em) {
+  //   width: 95vw;
+  // }
+}
+
+.title {
+  font-weight: 400;
+  font-size: 1.0625rem;
+  padding: 0.4375rem 0.8125rem;
+}
+
+.globalData {
+  height: calc(600px - 38.8px);
+  overflow: scroll;
+  overflow-x: hidden;
+  border: 1.5px solid #42a5f5;
+}
+
+.globalDataDark {
+  @extend .globalData;
+  border: 1px solid #1c1c47;
+}
+
+.wrapperDark {
+  @extend .wrapper;
+  box-shadow: 0px 0px 20px -11px rgba(89, 89, 135, 1);
+}
+
+.titleDark {
+  @extend .title;
+  background: darken(#64B5F6, 54);
+}

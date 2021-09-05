@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap');
+
+$mainColor: #1565C0;
+$navbarHeight: 65px;
+$logoDimension: 60px;
+
+.wrapper {
+  font-family: 'Saira Stencil One';
+  display: flex;
+  align-items: center;
+  background: rgba($mainColor, .3);
+  height: $navbarHeight;
+  border-radius: 0;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 1.875rem;
+
+  h1 {
+    font-size: 1.875rem;
+
+    @media only screen and (max-width: 37.5em) {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media only screen and (max-width: 37.5em) {
+    margin-left: 0.625rem;
+  }
+
+  &Image {
+    display: block;
+    background-image: url('../../assets/images/NewsIcon.png');
+    width: $logoDimension;
+    height: $logoDimension;
+    background-size: cover;
+
+    @media only screen and (max-width: 25.625em) {
+      display: none;
+    }
+  }
+}
+
+.list {
+  list-style: none;
+  margin-right: 1.875rem;
+  display: flex;
+  align-items: center;
+
+  @media only screen and (max-width: 37.5em) {
+    margin-right: 0.625rem;
+  }
+
+  &Item {
+    font-size: 1.125rem;
+
+    @media only screen and (max-width: 37.5em) {
+      font-size: 0.875rem;
+    }
+    
+    &:nth-of-type(even) {
+      margin-left: 2.7rem;
+      margin-right: 1.25rem;
+
+      @media only screen and (max-width: 25.625em) {
+        margin: 1.5rem;
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    &Link {
+      transition: border .25s ease-out;
+      border-color: #b2fef7;
+
+      &Active {
+        border-bottom: 3px solid #b2fef7;
+      }
+    }
+  }
+}
