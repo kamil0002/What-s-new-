@@ -33,8 +33,10 @@ const options = (title) => ({
     title: {
       display: true,
       text: `${title}`,
-      fontSize: '16px',
-      fontWeight: '500',
+      font: {
+        weight: '500',
+        size: '16px',
+      }
     },
     legend: {
       display: false,
@@ -42,15 +44,7 @@ const options = (title) => ({
     },
   },
   maintainAspectRatio: false,
-  tooltips: {
-    mode: "index",
-    intersect: false,
-    callbacks: {
-      label: function (tooltipItem, data) {
-        return numeral(tooltipItem.value).format("+0,0");
-      },
-    },
-  },
+
   scales: {
     y: {
         ticks: {
@@ -66,7 +60,7 @@ const options = (title) => ({
 function ChartBar({ period }) {
   return (
     <>
-      <Bar style={{ height: '400px' }} data={data} options={options(period)} />
+      <Bar style={{ height: '370px' }} data={data} options={options(period)} />
     </>
   );
 }

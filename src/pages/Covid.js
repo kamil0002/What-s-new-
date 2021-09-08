@@ -10,7 +10,7 @@ import Table from './../components/Table/Table';
 import Map from './../components/Map/Map';
 import DataBox from './../components/DataBox/DataBox';
 import RadioButtons from '../components/Radio/RadioButtons';
-import Chart from '../components/Chart/Chart';
+import ChartBar from '../components/Chart/ChartBar';
 import { formatThrityDaysInfo } from '../utils';
 import { sortData } from '../utils';
 import { formatVaccineData } from './../utils';
@@ -395,13 +395,13 @@ function Covid() {
         </div>
         <div className={classes.chartWrapper}>
           <div className={classes.chart}>
-            <Chart period="Dane dziennie" />
+            <ChartBar period="Dane dziennie" />
           </div>
           <div className={classes.chart}>
-            <Chart period="Dane tygodniowo"/>
+            <ChartBar period="Dane tygodniowo"/>
           </div>
           <div className={classes.chart}>
-            <Chart period="Dane miesięcznie" />
+            <ChartBar period="Dane miesięcznie" />
           </div>
         </div>
       </Paper>
