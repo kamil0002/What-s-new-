@@ -1,4 +1,6 @@
 import { Circle, Popup } from 'react-leaflet';
+import numeral from 'numeral';
+import styles from './components/Map/Map.module.scss';
 
 const casesTypeStyle = {
   totalCases: {
@@ -101,7 +103,19 @@ export const renderCircles = (data, type) => {
           color: casesTypeStyle[type]['color'],
         }}
       >
-        <Popup>{country.countryName}</Popup>
+        <Popup className={styles.popup}>
+          <div className={styles.countryDetails}>
+            <img className={styles.countryDetailsFlag} src={country.flag} alt={country.countryName}/>
+            <h4 className={styles.countryDetailsCountryName}>{country.countryName}</h4>
+          </div>
+          <div className={styles.countryData}>
+            <h5 className={styles.countryDataInfections}>Zakażenia: {numeral(country.totalCases).format('0,0.[00')}</h5>
+            <h5 className={styles.countryDataDeaths}>Zgony: {numeral(country.totalDeaths).format('0,0.[00')}
+            </h5>
+            <h5  className={styles.countryDataRecovered}>Wyzdrowiali: {numeral(country.totalRecovered).format('0,0.[00')}</h5>
+            <h5  className={styles.countryDataVaccinated}>Zasczepieni: {numeral(country.totalVaccinated).format('0,0.[00')}</h5>
+          </div>
+        </Popup>
       </Circle>
     ));
 };

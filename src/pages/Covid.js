@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { formatThrityDaysInfo } from '../utils';
-import { sortData } from '../utils';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -11,27 +9,37 @@ import blue from '@material-ui/core/colors/blue';
 import Table from './../components/Table/Table';
 import Map from './../components/Map/Map';
 import DataBox from './../components/DataBox/DataBox';
+import RadioButtons from '../components/Radio/RadioButtons';
+import Chart from '../components/Chart/Chart';
+import { formatThrityDaysInfo } from '../utils';
+import { sortData } from '../utils';
 import { formatVaccineData } from './../utils';
+import { fetchData } from './../utils';
 
 let countriesGlobalInfo = null;
+
+const wrappersBaseStyles = (theme) => ({
+  width: '95%',
+  borderRadius: '12px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingTop: theme.spacing(4),
+  paddingBottom: theme.spacing(4),
+  paddingLeft: theme.spacing(2.5),
+  paddingRight: theme.spacing(2.5),
+});
+
 const useStyles = makeStyles((theme) => {
   return {
-
     wrapper: {
       // background: 'transparent',
-      height: '100%',
+      // height: '100%',
+      paddingTop: theme.spacing(4),
+      backgroundColor: '#f5f5f5',
     },
 
     topWrapper: {
-      width: '95%',
-      borderRadius: '12px',
-      marginTop: theme.spacing(4),
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4),
-      paddingLeft: theme.spacing(2.5),
-      paddingRight: theme.spacing(2.5),
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      ...wrappersBaseStyles(theme),
     },
 
     grid: {
@@ -76,13 +84,32 @@ const useStyles = makeStyles((theme) => {
       },
     },
 
-    bottomWrapper: {
-      marginTop: theme.spacing(7),
-    },
-
     dropdownMenu: {
       border: `1px solid ${blue[50]}`,
     },
+
+    bottomWrapper: {
+      ...wrappersBaseStyles(theme),
+      marginTop: theme.spacing(7),
+      marginBottom: theme.spacing(7),
+    },
+    radioWrapper: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+
+    chartWrapper: {
+      marginTop: theme.spacing(6),
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      flexWrap: 'wrap',
+    },
+
+    chart: {
+      width: '400px',
+      minWidth: '250px',
+      marginBottom: theme.spacing(4),
+    }
   };
 });
 
@@ -98,11 +125,12 @@ function Covid() {
   const [casesType, setCasesType] = useState('totalCases');
 
   useEffect(() => {
-    let countriesNames = [];
-
-    fetch('https://disease.sh/v3/covid-19/countries')
-      .then((response) => response.json())
-      .then((data) => {
+    (async () => {
+      try {
+        let countriesNames = [];
+        const data = await fetchData(
+          'https://disease.sh/v3/covid-19/countries'
+        );
         countriesGlobalInfo = data.map((country) => ({
           countryName: country.country,
           flag: country.countryInfo.flag,
@@ -118,13 +146,18 @@ function Covid() {
         );
         countriesNames.sort((a, b) => a - b);
         setCountriesNames(countriesNames);
-      });
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, []);
-
+  //* May occur problem later on
   useEffect(() => {
-    fetch('https://disease.sh/v3/covid-19/historical?lastdays=30')
-      .then((response) => response.json())
-      .then((data) => {
+    (async () => {
+      try {
+        const data = await fetchData(
+          'https://disease.sh/v3/covid-19/historical?lastdays=30'
+        );
         data.forEach((country) => {
           const foundedCountry = countriesGlobalInfo.findIndex(
             (c) => c.countryName === country.country
@@ -143,14 +176,11 @@ function Covid() {
             thirtyDaysRecovered,
           });
         });
-      });
-      
-      fetch(
-        'https://disease.sh/v3/covid-19/vaccine/coverage/countries?lastdays=30&fullData=false'
-        )
-        .then((response) => response.json())
-        .then((data) => {
-        data.forEach((country) => {
+
+        const newData = await fetchData(
+          'https://disease.sh/v3/covid-19/vaccine/coverage/countries?lastdays=30&fullData=false'
+        );
+        newData.forEach((country) => {
           const foundedCountry = countriesGlobalInfo.findIndex(
             (c) => c.countryName === country.country
           );
@@ -161,16 +191,20 @@ function Covid() {
           });
         });
         setCountriesInfo(sortData(countriesGlobalInfo));
-      });
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, []);
 
   useEffect(() => {
-    let countryCases = null;
-    let countryVaccinated = null;
-
-    fetch('https://disease.sh/v3/covid-19/countries/Poland')
-      .then((response) => response.json())
-      .then((data) => {
+    (async () => {
+      try {
+        let countryCases = null;
+        let countryVaccinated = null;
+        const data = await fetchData(
+          'https://disease.sh/v3/covid-19/countries/Poland'
+        );
         countryCases = {
           totalCases: data.cases,
           todayCases: data.todayCases,
@@ -180,14 +214,16 @@ function Covid() {
           todayRecovered: data.todayRecovered,
         };
         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-      });
 
-    fetch('https://disease.sh/v3/covid-19/vaccine/coverage/countries/Poland')
-      .then((response) => response.json())
-      .then((data) => {
-        countryVaccinated = formatVaccineData(data.timeline);
+        const newData = await fetchData(
+          'https://disease.sh/v3/covid-19/vaccine/coverage/countries/Poland'
+        );
+        countryVaccinated = formatVaccineData(newData.timeline);
         setCountryData({ ...countryCases, ...countryVaccinated });
-      });
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, []);
 
   const handleCountryChange = async (e) => {
@@ -302,7 +338,10 @@ function Covid() {
               {countryData && (
                 <div className={classes.infoBoxes}>
                   <DataBox
-                    onClick={() => {setCasesType('totalCases'); setPrevCountry(country)}}
+                    onClick={() => {
+                      setCasesType('totalCases');
+                      setPrevCountry(country);
+                    }}
                     casesType="Zakażenia"
                     negativeBox
                     active={casesType === 'totalCases'}
@@ -310,7 +349,10 @@ function Covid() {
                     todayCases={countryData.todayCases}
                   />
                   <DataBox
-                    onClick={() => {setCasesType('totalDeaths'); setPrevCountry(country)}}
+                    onClick={() => {
+                      setCasesType('totalDeaths');
+                      setPrevCountry(country);
+                    }}
                     casesType="Zgony"
                     active={casesType === 'totalDeaths'}
                     negativeBox
@@ -318,14 +360,20 @@ function Covid() {
                     todayCases={countryData.todayDeaths}
                   />
                   <DataBox
-                    onClick={() => {setCasesType('totalRecovered'); setPrevCountry(country)}}
+                    onClick={() => {
+                      setCasesType('totalRecovered');
+                      setPrevCountry(country);
+                    }}
                     casesType="Wyzdrowiali"
                     active={casesType === 'totalRecovered'}
                     totalCases={countryData.totalRecovered}
                     todayCases={countryData.todayRecovered}
                   />
                   <DataBox
-                    onClick={() => {setCasesType('totalVaccinated'); setPrevCountry(country)}}
+                    onClick={() => {
+                      setCasesType('totalVaccinated');
+                      setPrevCountry(country);
+                    }}
                     casesType="Zaszczepieni"
                     active={casesType === 'totalVaccinated'}
                     totalCases={countryData.totalVaccinated}
@@ -338,9 +386,25 @@ function Covid() {
         </Grid>
       </Paper>
 
-      <div>
-        <Paper className={classes.bottomWrapper}>Some bottom content</Paper>
-      </div>
+      <Paper className={classes.bottomWrapper}>
+        <div className={classes.radioWrapper}>
+          <RadioButtons
+            onChange={(e) => setCasesType(e.target.value)}
+            casesType={casesType}
+          />
+        </div>
+        <div className={classes.chartWrapper}>
+          <div className={classes.chart}>
+            <Chart period="Dane dziennie" />
+          </div>
+          <div className={classes.chart}>
+            <Chart period="Dane tygodniowo"/>
+          </div>
+          <div className={classes.chart}>
+            <Chart period="Dane miesięcznie" />
+          </div>
+        </div>
+      </Paper>
     </Paper>
   );
 }
