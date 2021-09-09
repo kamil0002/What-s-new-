@@ -8,7 +8,6 @@ import AppContext from './../../context';
 
 function Map({ data, center, zoom, casesType, newCountry }) {
   const { darkMode } = useContext(AppContext);
-  console.log(casesType);
   return (
     <div className={styles.wrapper}>
       <MapContainer className={styles.map} center={center} zoom={zoom}>

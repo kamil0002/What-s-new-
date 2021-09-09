@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => {
       width: '400px',
       minWidth: '250px',
       marginBottom: theme.spacing(4),
-    }
+    },
   };
 });
 
@@ -122,7 +122,7 @@ function Covid() {
   const [countryData, setCountryData] = useState({});
   const [mapCenter, setMapCenter] = useState([52, 20]);
   const [mapZoom, setMapZoom] = useState(4);
-  const [casesType, setCasesType] = useState('totalCases');
+  const [casesType, setCasesType] = useState('cases');
 
   useEffect(() => {
     (async () => {
@@ -136,9 +136,9 @@ function Covid() {
           flag: country.countryInfo.flag,
           lat: country.countryInfo.lat,
           long: country.countryInfo.long,
-          totalCases: country.cases,
-          totalDeaths: country.deaths,
-          totalRecovered: country.recovered,
+          cases: country.cases,
+          deaths: country.deaths,
+          recovered: country.recovered,
         }));
         sortData(countriesGlobalInfo);
         countriesNames = countriesGlobalInfo.map(
@@ -184,10 +184,10 @@ function Covid() {
           const foundedCountry = countriesGlobalInfo.findIndex(
             (c) => c.countryName === country.country
           );
-          const totalVaccinated = formatVaccineData(country.timeline);
+          const vaccinated = formatVaccineData(country.timeline);
           return (countriesGlobalInfo[foundedCountry] = {
             ...countriesGlobalInfo[foundedCountry],
-            ...totalVaccinated,
+            ...vaccinated,
           });
         });
         setCountriesInfo(sortData(countriesGlobalInfo));
@@ -206,11 +206,11 @@ function Covid() {
           'https://disease.sh/v3/covid-19/countries/Poland'
         );
         countryCases = {
-          totalCases: data.cases,
+          cases: data.cases,
           todayCases: data.todayCases,
-          totalDeaths: data.deaths,
+          deaths: data.deaths,
           todayDeaths: data.todayDeaths,
-          totalRecovered: data.recovered,
+          recovered: data.recovered,
           todayRecovered: data.todayRecovered,
         };
         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
@@ -237,11 +237,11 @@ function Covid() {
         .then((response) => response.json())
         .then((data) => {
           countryCases = {
-            totalCases: data.cases,
+            cases: data.cases,
             todayCases: data.todayCases,
-            totalDeaths: data.deaths,
+            deaths: data.deaths,
             todayDeaths: data.todayDeaths,
-            totalRecovered: data.recovered,
+            recovered: data.recovered,
             todayRecovered: data.todayRecovered,
           };
         });
@@ -263,11 +263,11 @@ function Covid() {
         countryCases = {
           lat: data.countryInfo.lat,
           long: data.countryInfo.long,
-          totalCases: data.cases,
+          cases: data.cases,
           todayCases: data.todayCases,
-          totalDeaths: data.deaths,
+          deaths: data.deaths,
           todayDeaths: data.todayDeaths,
-          totalRecovered: data.recovered,
+          recovered: data.recovered,
           todayRecovered: data.todayRecovered,
         };
         setMapZoom(6);
@@ -339,44 +339,44 @@ function Covid() {
                 <div className={classes.infoBoxes}>
                   <DataBox
                     onClick={() => {
-                      setCasesType('totalCases');
+                      setCasesType('cases');
                       setPrevCountry(country);
                     }}
                     casesType="Zakażenia"
                     negativeBox
-                    active={casesType === 'totalCases'}
-                    totalCases={countryData.totalCases}
+                    active={casesType === 'cases'}
+                    cases={countryData.cases}
                     todayCases={countryData.todayCases}
                   />
                   <DataBox
                     onClick={() => {
-                      setCasesType('totalDeaths');
+                      setCasesType('deaths');
                       setPrevCountry(country);
                     }}
                     casesType="Zgony"
-                    active={casesType === 'totalDeaths'}
+                    active={casesType === 'deaths'}
                     negativeBox
-                    totalCases={countryData.totalDeaths}
+                    cases={countryData.deaths}
                     todayCases={countryData.todayDeaths}
                   />
                   <DataBox
                     onClick={() => {
-                      setCasesType('totalRecovered');
+                      setCasesType('recovered');
                       setPrevCountry(country);
                     }}
                     casesType="Wyzdrowiali"
-                    active={casesType === 'totalRecovered'}
-                    totalCases={countryData.totalRecovered}
+                    active={casesType === 'recovered'}
+                    cases={countryData.recovered}
                     todayCases={countryData.todayRecovered}
                   />
                   <DataBox
                     onClick={() => {
-                      setCasesType('totalVaccinated');
+                      setCasesType('vaccinated');
                       setPrevCountry(country);
                     }}
                     casesType="Zaszczepieni"
-                    active={casesType === 'totalVaccinated'}
-                    totalCases={countryData.totalVaccinated}
+                    active={casesType === 'vaccinated'}
+                    cases={countryData.vaccinated}
                     todayCases={countryData.todayVaccinated}
                   />
                 </div>
@@ -394,14 +394,19 @@ function Covid() {
           />
         </div>
         <div className={classes.chartWrapper}>
-          <div className={classes.chart}>
-            <ChartBar period="Dane dziennie" />
+          {/* <div className={classes.chart}>
+            <ChartBar casesType={casesType} country={country} period="Dane dziennie" />
           </div>
           <div className={classes.chart}>
-            <ChartBar period="Dane tygodniowo"/>
-          </div>
+            <ChartBar casesType={casesType} country={country} period="Dane tygodniowo"/>
+          </div> */}
           <div className={classes.chart}>
-            <ChartBar period="Dane miesięcznie" />
+            <ChartBar
+              casesType={casesType}
+              todayCases={countryData.todayCases}
+              country={country}
+              period="Dane miesięcznie"
+            />
           </div>
         </div>
       </Paper>

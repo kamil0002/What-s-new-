@@ -10,15 +10,15 @@ function Table({ data }) {
     <div className={`${darkMode ? styles.wrapperDark : styles.wrapper}`}>
       <h3 className={`${darkMode ? styles.titleDark : styles.title}`}>Dane według krajów</h3>
       <div className={`${darkMode ? styles.globalDataDark : styles.globalData}`}>
-        {data.map(({countryName, flag, totalCases, totalDeaths, totalRecovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered}, i) => (
+        {data.map(({countryName, flag, cases, deaths, recovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered}, i) => (
           <TableItem
             key={i}
             pos={i+1} 
             countryName={countryName}
             flag={flag}
-            totalCases={totalCases}
-            totalDeaths={totalDeaths}
-            totalRecovered={totalRecovered}
+            cases={cases}
+            deaths={deaths}
+            recovered={recovered}
             thirtyDaysCases={thirtyDaysCases}
             thirtyDaysDeaths={thirtyDaysDeaths}
             thirtyDaysRecovered={thirtyDaysRecovered}

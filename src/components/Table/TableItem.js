@@ -3,7 +3,7 @@ import numeral from 'numeral';
 import styles from './TableItem.module.scss';
 import AppContext from './../../context';
 
-function TableItem({ countryName, flag, totalCases, totalDeaths, totalRecovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered, pos }) {
+function TableItem({ countryName, flag, cases, deaths, recovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered, pos }) {
 
   const { darkMode } = useContext(AppContext);
 
@@ -26,8 +26,8 @@ function TableItem({ countryName, flag, totalCases, totalDeaths, totalRecovered,
           <span>{thirtyDaysRecovered > 0 ? numeral(thirtyDaysRecovered).format('0,0.[00') : '?'}</span>
         </p>
         <p className={`${darkMode ? styles.countryInfoDetailsDataDark : styles.countryInfoDetailsData}`}>
-          Łącznie - <span>{numeral(totalCases).format('0,0.[00')}</span> / <span>{numeral(totalDeaths).format('0,0.[00')}</span> /{' '}
-          <span>{numeral(totalRecovered).format('0,0.[00')}</span>
+          Łącznie - <span>{numeral(cases).format('0,0.[00')}</span> / <span>{numeral(deaths).format('0,0.[00')}</span> /{' '}
+          <span>{numeral(recovered).format('0,0.[00')}</span>
         </p>
       </div>
     </div>

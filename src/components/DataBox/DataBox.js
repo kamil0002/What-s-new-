@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1.2rem',
     },
   },
-  boxTotalCases: {
+  boxcases: {
     fontWeight: 600,
     fontSize: '1.1rem',
 
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function DataBox({ casesType, active, totalCases, todayCases, negativeBox, onClick }) {
+function DataBox({ casesType, active, cases, todayCases, negativeBox, onClick }) {
   const classes = useStyles();
   const { darkMode } = useContext(AppContext);
 
@@ -101,8 +101,8 @@ function DataBox({ casesType, active, totalCases, todayCases, negativeBox, onCli
       elevation={2}
     >
       <h5 className={`${classes.boxHeader} ${darkMode && classes.darkDataColor}`}>{casesType}</h5>
-      <p className={classes.boxTotalCases}>
-        {numeral(totalCases).format('0,0.[00')}
+      <p className={classes.boxcases}>
+        {numeral(cases).format('0,0.[00')}
       </p>
       <p className={classes.boxNewCases}>
         +{numeral(todayCases).format('0,0.[00')}

@@ -3,19 +3,19 @@ import numeral from 'numeral';
 import styles from './components/Map/Map.module.scss';
 
 const casesTypeStyle = {
-  totalCases: {
+  cases: {
     color: '#EF5350',
     circleScale: 0.07,
   },
-  totalDeaths: {
+  deaths: {
     color: '#EF3560',
     circleScale: 2,
   },
-  totalRecovered: {
+  recovered: {
     color: '#66BB6A',
     circleScale: 0.07,
   },
-  totalVaccinated: {
+  vaccinated: {
     color: '#66CA6A',
     circleScale: 0.004,
   },
@@ -78,14 +78,14 @@ export const formatVaccineData = (data) => {
   );
 
   return {
-    totalVaccinated: data[today],
+    vaccinated: data[today],
     todayVaccinated: data[today] - data[yesterday],
   };
 };
 
 export const sortData = (data) => {
   const sortedData = [...data];
-  return sortedData.sort((a, b) => b.totalCases - a.totalCases);
+  return sortedData.sort((a, b) => b.cases - a.cases);
 };
 
 export const renderCircles = (data, type) => {
@@ -109,11 +109,11 @@ export const renderCircles = (data, type) => {
             <h4 className={styles.countryDetailsCountryName}>{country.countryName}</h4>
           </div>
           <div className={styles.countryData}>
-            <h5 className={styles.countryDataInfections}>Zakażenia: {numeral(country.totalCases).format('0,0.[00')}</h5>
-            <h5 className={styles.countryDataDeaths}>Zgony: {numeral(country.totalDeaths).format('0,0.[00')}
+            <h5 className={styles.countryDataInfections}>Zakażenia: {numeral(country.cases).format('0,0.[00')}</h5>
+            <h5 className={styles.countryDataDeaths}>Zgony: {numeral(country.deaths).format('0,0.[00')}
             </h5>
-            <h5  className={styles.countryDataRecovered}>Wyzdrowiali: {numeral(country.totalRecovered).format('0,0.[00')}</h5>
-            <h5  className={styles.countryDataVaccinated}>Zasczepieni: {numeral(country.totalVaccinated).format('0,0.[00')}</h5>
+            <h5  className={styles.countryDataRecovered}>Wyzdrowiali: {numeral(country.recovered).format('0,0.[00')}</h5>
+            <h5  className={styles.countryDataVaccinated}>Zasczepieni: {numeral(country.vaccinated).format('0,0.[00')}</h5>
           </div>
         </Popup>
       </Circle>
