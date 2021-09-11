@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import styles from './Navigation.module.scss';
 import { NavLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
-import AppContext from '../../context';
+import ThemeContext from '../../Contexts/ThemeContext';
 
 
 function Navigation() {
-  const { darkMode, setDarkMode } = useContext(AppContext);
+  const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   return (
     <nav>

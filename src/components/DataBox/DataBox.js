@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import green from '@material-ui/core/colors/green';
-import AppContext from '../../context';
+import ThemeContext from '../../Contexts/ThemeContext';
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DataBox({ casesType, active, cases, todayCases, negativeBox, onClick }) {
   const classes = useStyles();
-  const { darkMode } = useContext(AppContext);
+  const { darkMode } = useContext(ThemeContext);
 
   return (
     <Paper

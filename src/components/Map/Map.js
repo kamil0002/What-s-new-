@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, LayersControl } from 'react-leaflet';
 import { renderCircles } from './../../utils';
 import ChangeView from './ChangeView';
-import AppContext from './../../context';
+import AppContext from '../../Contexts/ThemeContext';
 
 function Map({ data, center, zoom, casesType, newCountry }) {
   const { darkMode } = useContext(AppContext);

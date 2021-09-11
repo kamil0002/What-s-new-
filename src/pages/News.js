@@ -5,7 +5,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import Paper from '@material-ui/core/Paper';
 import NewsCard from '../components/NewsCard/NewsCard';
 import { formatArticlesData } from '../utils';
-import AppContext from '../context';
+import { fetchData } from '../utils';
+import ThemeContext from '../Contexts/ThemeContext';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -35,22 +36,15 @@ function News() {
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [curPage, setCurPage] = useState(1);
 
-  const { darkMode } = useContext(AppContext);
+  const { darkMode } = useContext(ThemeContext);
 
   useEffect(() => {
-    fetch(
-      'https://newsapi.org/v2/top-headlines?country=pl&apiKey=188a11c2d49b4c3faf1b90955147dd9b'
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setArticlesData(formatArticlesData(data.articles));
-        setDisplayedArticles(formatArticlesData(data.articles.slice(0, 12)));
-      })
-      .catch((err) => {
-        console.error('An error occured', err);
-      });
+    (async () => {
+      const data = await fetchData('https://newsapi.org/v2/top-headlines?country=pl&apiKey=188a11c2d49b4c3faf1b90955147dd9b');
+      setArticlesData(formatArticlesData(data.articles));
+      setDisplayedArticles(formatArticlesData(data.articles.slice(0, 12)));
+
+    })();
   }, []);
 
   const handleArticlesView = (curPage) => {

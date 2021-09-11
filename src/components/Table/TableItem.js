@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import numeral from 'numeral';
 import styles from './TableItem.module.scss';
-import AppContext from './../../context';
+import AppContext from '../../Contexts/ThemeContext';
 
 function TableItem({ countryName, flag, cases, deaths, recovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered, pos }) {
 

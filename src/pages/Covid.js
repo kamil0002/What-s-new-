@@ -180,6 +180,7 @@ function Covid() {
         const newData = await fetchData(
           'https://disease.sh/v3/covid-19/vaccine/coverage/countries?lastdays=30&fullData=false'
         );
+        console.log("newDATA >>>>>>", newData)
         newData.forEach((country) => {
           const foundedCountry = countriesGlobalInfo.findIndex(
             (c) => c.countryName === country.country
@@ -250,6 +251,7 @@ function Covid() {
         .then((response) => response.json())
         .then((data) => {
           countryVaccinated = formatVaccineData(data);
+
         });
       setCountryData({ ...countryCases, ...countryVaccinated });
       setMapZoom(2);
@@ -401,12 +403,17 @@ function Covid() {
             <ChartBar casesType={casesType} country={country} period="Dane tygodniowo"/>
           </div> */}
           <div className={classes.chart}>
+            {countryData.todayCases && 
             <ChartBar
               casesType={casesType}
               todayCases={countryData.todayCases}
+              todayDeaths={countryData.todayDeaths}
+              todayRecovered={countryData.todayRecovered}
+              todayVaccinated={countryData.todayVaccinated}
               country={country}
-              period="Dane miesięcznie"
+              period="Dane dziennie"
             />
+            }
           </div>
         </div>
       </Paper>

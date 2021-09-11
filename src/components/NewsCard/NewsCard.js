@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
 import noImg from '../../assets/images/noImg.jpg';
-import AppContext from '../../context';
+import ThemeContext from '../../Contexts/ThemeContext';
 
 const useStyles = makeStyles({
   card: {
@@ -52,7 +52,7 @@ function NewsCard({
 }) {
   const classes = useStyles();
 
-  const { darkMode } = useContext(AppContext);
+  const { darkMode } = useContext(ThemeContext);
 
   return (
     <Card className={classes.card}>

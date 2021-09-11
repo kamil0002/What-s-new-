@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import styles from './Table.module.scss';
 import TableItem from './TableItem';
-import AppContext from '../../context';
+import ThemeContext from '../../Contexts/ThemeContext';
 
 function Table({ data }) {
-  const { darkMode } = useContext(AppContext);
+  const { darkMode } = useContext(ThemeContext);
 
   return ( 
     <div className={`${darkMode ? styles.wrapperDark : styles.wrapper}`}>

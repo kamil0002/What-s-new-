@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import CovidPage from './pages/Covid';
 import NewsPage from './pages/News';
 import Navigation from './components/Navigation/Navigation';
-import AppContext from './context';
+import ThemeContext from './Contexts/ThemeContext';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -19,7 +19,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AppContext.Provider value={{ darkMode, setDarkMode }}>
+      <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
         <ThemeProvider theme={theme}>
           <Paper elevation={0} square style={{height: '100%'}}>
             <Navigation />
@@ -29,7 +29,7 @@ function App() {
             </Switch>
           </Paper>
         </ThemeProvider>
-      </AppContext.Provider>
+      </ThemeContext.Provider>
     </BrowserRouter>
   );
 }
