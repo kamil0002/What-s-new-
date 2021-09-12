@@ -21,7 +21,7 @@ function App() {
     <BrowserRouter>
       <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
         <ThemeProvider theme={theme}>
-          <Paper elevation={0} square style={{height: '100%'}}>
+          <Paper elevation={0} square>
             <Navigation />
             <Switch>
               <Route exact path="/" component={CovidPage} />

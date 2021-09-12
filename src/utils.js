@@ -21,11 +21,10 @@ const casesTypeStyle = {
   },
 };
 
-
 export const fetchData = async (url) => {
   const res = await fetch(url);
   return res.json();
-}
+};
 
 export const formatArticlesData = (articles) =>
   articles.map((article) => {
@@ -105,17 +104,95 @@ export const renderCircles = (data, type) => {
       >
         <Popup className={styles.popup}>
           <div className={styles.countryDetails}>
-            <img className={styles.countryDetailsFlag} src={country.flag} alt={country.countryName}/>
-            <h4 className={styles.countryDetailsCountryName}>{country.countryName}</h4>
+            <img
+              className={styles.countryDetailsFlag}
+              src={country.flag}
+              alt={country.countryName}
+            />
+            <h4 className={styles.countryDetailsCountryName}>
+              {country.countryName}
+            </h4>
           </div>
           <div className={styles.countryData}>
-            <h5 className={styles.countryDataInfections}>Zakażenia: {numeral(country.cases).format('0,0.[00')}</h5>
-            <h5 className={styles.countryDataDeaths}>Zgony: {numeral(country.deaths).format('0,0.[00')}
+            <h5 className={styles.countryDataInfections}>
+              Zakażenia: {numeral(country.cases).format('0,0.[00')}
             </h5>
-            <h5  className={styles.countryDataRecovered}>Wyzdrowiali: {numeral(country.recovered).format('0,0.[00')}</h5>
-            <h5  className={styles.countryDataVaccinated}>Zasczepieni: {numeral(country.vaccinated).format('0,0.[00')}</h5>
+            <h5 className={styles.countryDataDeaths}>
+              Zgony: {numeral(country.deaths).format('0,0.[00')}
+            </h5>
+            <h5 className={styles.countryDataRecovered}>
+              Wyzdrowiali: {numeral(country.recovered).format('0,0.[00')}
+            </h5>
+            <h5 className={styles.countryDataVaccinated}>
+              Zasczepieni: {numeral(country.vaccinated).format('0,0.[00')}
+            </h5>
           </div>
         </Popup>
       </Circle>
     ));
+};
+
+//* Chart DATA
+
+export const formatDailyChartData = async (
+  casesType,
+  country,
+  todayCases = 0,
+  todayDeaths = 0,
+  todayRecovered = 0,
+  todayVaccinated = 0
+) => {
+  let todaysData;
+  let type;
+  let externalData;
+  let cases = [];
+  let barCases = [];
+  let labels = [];
+  if (casesType === 'cases') todaysData = todayCases;
+  if (casesType === 'deaths') todaysData = todayDeaths;
+  if (casesType === 'recovered') todaysData = todayRecovered;
+  if (casesType === 'vaccinated') {
+    todaysData = todayVaccinated;
+    if (country === 'worldwide') {
+      externalData = await fetchData(
+        'https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=8&fullData=false'
+      );
+      type = externalData;
+    } else {
+      externalData = await fetchData(
+        `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${country}?lastdays=8&fullData=false`
+      );
+      type = externalData.timeline;
+    }
+  } else {
+    if (country === 'worldwide') {
+      externalData = await fetchData(
+        `https://disease.sh/v3/covid-19/historical/all?lastdays=8`
+      );
+      type = externalData[casesType];
+    } else {
+      externalData = await fetchData(
+        `https://disease.sh/v3/covid-19/historical/${country}?lastdays=8`
+      );
+      type = externalData?.timeline[casesType];
+    }
+  }
+  for (const day in type) {
+    const date = new Date(day);
+    const label = new Intl.DateTimeFormat(navigator.language, {
+      weekday: 'short',
+    }).format(date);
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    labels.push(label);
+    cases.push(type[day]);
+  }
+  for (let i = 0; i < cases.length - 1; i++) {
+    barCases[i] = cases[i + 1] - cases[i];
+  }
+  labels.shift();
+
+  return {
+    labels,
+    barCases,
+  };
 };

@@ -10,8 +10,16 @@ import ThemeContext from '../Contexts/ThemeContext';
 
 const useStyles = makeStyles((theme) => {
   return {
+
+    wrapper: {
+      backgroundColor: '#f5f5f5',
+    },
+    darkWrapper: {
+      backgroundColor: '#585858',
+    },
+
     gridWrapper: {
-      marginTop: theme.spacing(6),
+      paddingTop: theme.spacing(6),
       marginBottom: theme.spacing(5),
       width: '90%',
       margin: 'auto',
@@ -58,7 +66,7 @@ function News() {
   };
 
   return (
-    <Paper elevation={0} square style={{backgroundColor: 'transparent'}}>
+    <Paper elevation={0} square className={darkMode ? classes.darkWrapper : classes.wrapper}>
       <div className={classes.gridWrapper}>
         <Grid className={classes.gridContainer} container spacing={4}>
           {displayedArticles &&

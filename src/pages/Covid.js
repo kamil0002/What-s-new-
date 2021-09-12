@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,6 +15,7 @@ import { formatThrityDaysInfo } from '../utils';
 import { sortData } from '../utils';
 import { formatVaccineData } from './../utils';
 import { fetchData } from './../utils';
+import ThemeContext from './../Contexts/ThemeContext';
 
 let countriesGlobalInfo = null;
 
@@ -35,7 +36,14 @@ const useStyles = makeStyles((theme) => {
       // background: 'transparent',
       // height: '100%',
       paddingTop: theme.spacing(4),
+      paddingBottom: theme.spacing(7),
       backgroundColor: '#f5f5f5',
+    },
+
+    darkWrapper: {
+      paddingTop: theme.spacing(4),
+      paddingBottom: theme.spacing(7),
+      backgroundColor: '#585858',
     },
 
     topWrapper: {
@@ -91,7 +99,6 @@ const useStyles = makeStyles((theme) => {
     bottomWrapper: {
       ...wrappersBaseStyles(theme),
       marginTop: theme.spacing(7),
-      marginBottom: theme.spacing(7),
     },
     radioWrapper: {
       display: 'flex',
@@ -114,6 +121,8 @@ const useStyles = makeStyles((theme) => {
 });
 
 function Covid() {
+  const { darkMode } = useContext(ThemeContext);
+
   const classes = useStyles();
   const [countriesInfo, setCountriesInfo] = useState([]);
   const [countriesNames, setCountriesNames] = useState();
@@ -180,7 +189,6 @@ function Covid() {
         const newData = await fetchData(
           'https://disease.sh/v3/covid-19/vaccine/coverage/countries?lastdays=30&fullData=false'
         );
-        console.log("newDATA >>>>>>", newData)
         newData.forEach((country) => {
           const foundedCountry = countriesGlobalInfo.findIndex(
             (c) => c.countryName === country.country
@@ -251,7 +259,6 @@ function Covid() {
         .then((response) => response.json())
         .then((data) => {
           countryVaccinated = formatVaccineData(data);
-
         });
       setCountryData({ ...countryCases, ...countryVaccinated });
       setMapZoom(2);
@@ -287,7 +294,7 @@ function Covid() {
   };
 
   return (
-    <Paper square elevation={0} className={classes.wrapper}>
+    <Paper square elevation={0} className={darkMode ? classes.darkWrapper : classes.wrapper}>
       <Paper className={classes.topWrapper}>
         <Grid container spacing={5} className={classes.grid}>
           <Grid
@@ -396,24 +403,36 @@ function Covid() {
           />
         </div>
         <div className={classes.chartWrapper}>
-          {/* <div className={classes.chart}>
-            <ChartBar casesType={casesType} country={country} period="Dane dziennie" />
+          {/*//* Daily */}
+          <div className={classes.chart}>
+            {countryData.todayCases && (
+              <ChartBar
+                casesType={casesType}
+                todayCases={countryData.todayCases}
+                todayDeaths={countryData.todayDeaths}
+                todayRecovered={countryData.todayRecovered}
+                todayVaccinated={countryData.todayVaccinated}
+                country={country}
+                period="Dane dziennie"
+                daily
+              />
+            )}
           </div>
+
+          {/*//* Weekly */}
           <div className={classes.chart}>
-            <ChartBar casesType={casesType} country={country} period="Dane tygodniowo"/>
-          </div> */}
-          <div className={classes.chart}>
-            {countryData.todayCases && 
-            <ChartBar
-              casesType={casesType}
-              todayCases={countryData.todayCases}
-              todayDeaths={countryData.todayDeaths}
-              todayRecovered={countryData.todayRecovered}
-              todayVaccinated={countryData.todayVaccinated}
-              country={country}
-              period="Dane dziennie"
-            />
-            }
+            {countryData.todayCases && (
+              <ChartBar
+                casesType={casesType}
+                todayCases={countryData.todayCases}
+                todayDeaths={countryData.todayDeaths}
+                todayRecovered={countryData.todayRecovered}
+                todayVaccinated={countryData.todayVaccinated}
+                country={country}
+                period="Dane tygodniowo"
+                weekly
+              />
+            )}
           </div>
         </div>
       </Paper>
