@@ -134,49 +134,44 @@ export const renderCircles = (data, type) => {
 
 //* Chart DATA
 
-export const formatDailyChartData = async (
-  casesType,
-  country,
-  todayCases = 0,
-  todayDeaths = 0,
-  todayRecovered = 0,
-  todayVaccinated = 0
-) => {
-  let todaysData;
-  let type;
+const fetchChartData = async (DAYS, country, casesType) => {
   let externalData;
-  let cases = [];
-  let barCases = [];
-  let labels = [];
-  if (casesType === 'cases') todaysData = todayCases;
-  if (casesType === 'deaths') todaysData = todayDeaths;
-  if (casesType === 'recovered') todaysData = todayRecovered;
+  let type = [];
+
   if (casesType === 'vaccinated') {
-    todaysData = todayVaccinated;
     if (country === 'worldwide') {
       externalData = await fetchData(
-        'https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=8&fullData=false'
+        `https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=${DAYS}&fullData=false`
       );
       type = externalData;
     } else {
       externalData = await fetchData(
-        `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${country}?lastdays=8&fullData=false`
+        `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${country}?lastdays=${DAYS}&fullData=false`
       );
       type = externalData.timeline;
     }
   } else {
     if (country === 'worldwide') {
       externalData = await fetchData(
-        `https://disease.sh/v3/covid-19/historical/all?lastdays=8`
+        `https://disease.sh/v3/covid-19/historical/all?lastdays=${DAYS}`
       );
       type = externalData[casesType];
     } else {
       externalData = await fetchData(
-        `https://disease.sh/v3/covid-19/historical/${country}?lastdays=8`
+        `https://disease.sh/v3/covid-19/historical/${country}?lastdays=${DAYS}`
       );
       type = externalData?.timeline[casesType];
     }
   }
+
+  return type;
+};
+
+const formatDailyChartData = (type) => {
+  const labels = [];
+  const cases = [];
+  const barCases = [];
+
   for (const day in type) {
     const date = new Date(day);
     const label = new Intl.DateTimeFormat(navigator.language, {
@@ -195,4 +190,61 @@ export const formatDailyChartData = async (
     labels,
     barCases,
   };
+};
+
+const formatWeeklyChartData = (type) => {
+  let innerArrayIndicator = 0;
+  let sum = 0;
+  const labels = [];
+  const cases = [];
+  const barCases = [];
+
+  //* Create inner arrays for each week
+  for (let i = 0; i < 7; i++) {
+    cases[i] = [];
+    labels[i] = [];
+  }
+
+  //* Push data into array
+  for (const day in type) {
+    const newDay = new Intl.DateTimeFormat('PL-pl', {
+      day: '2-digit',
+      month: '2-digit',
+    }).format(new Date(day));
+    cases[innerArrayIndicator].push(type[day]);
+    labels[innerArrayIndicator].push(newDay);
+    if (cases[innerArrayIndicator].length === 8) innerArrayIndicator++;
+  }
+
+  //* Calcuate week cases in each array
+  for (let i = 0; i < cases.length; i++) {
+    for (let j = 0; j < cases[i].length - 1; j++) {
+      sum += cases[i][j + 1] - cases[i][j];
+    }
+    barCases.push(sum);
+    sum = 0;
+  }
+
+  //* Reformat labels
+  for (let i = 0; i < labels.length; i++) {
+    labels[i].shift();
+    labels[i].splice(1, 5);
+    labels[i] = labels[i].join(' - ');
+  }
+
+  return {
+    labels,
+    barCases,
+  };
+};
+
+export const buildChartData = async (casesType, country, daily) => {
+  const DAYS = daily ? 8 : 56;
+  const type = await fetchChartData(DAYS, country, casesType);
+  let data = {};
+
+  daily
+    ? (data = formatDailyChartData(type))
+    : (data = formatWeeklyChartData(type));
+  return data;
 };

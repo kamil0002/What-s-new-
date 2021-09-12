@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import numeral from 'numeral';
 import { Bar } from 'react-chartjs-2';
 import { fetchData } from './../../utils';
-import { formatDailyChartData } from './../../utils';
+import { buildChartData } from './../../utils';
 
 const options = (title) => ({
   plugins: {
@@ -50,15 +50,10 @@ const options = (title) => ({
 });
 
 function ChartBar({
-  weekly,
   daily,
   period,
   casesType,
   country,
-  todayCases,
-  todayDeaths,
-  todayRecovered,
-  todayVaccinated,
 }) {
   const [data, setData] = useState([]);
   const [labels, setLabels] = useState([]);
@@ -66,81 +61,10 @@ function ChartBar({
   useEffect(() => {
     (async () => {
       try {
-        if (daily) {
-          const data = await formatDailyChartData(casesType, country);
+          const data = await buildChartData(casesType, country, daily);
           const { labels, barCases } = data;
           setData(barCases);
           setLabels(labels);
-        }
-
-        if(weekly) {
-          let todaysData;
-          let type;
-          let sum = 0;
-          let labels = [];
-          let externalData;
-          const fullData = [];
-          let barCases = [];
-          let weekIndicator;
-          let innerArrayIndicator = 0;
-          if (casesType === 'vaccinated') {
-            todaysData = todayVaccinated;
-            if (country === 'worldwide') {
-              externalData = await fetchData(
-                'https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=56&fullData=false'
-              );
-              type = externalData;
-            } else {
-              externalData = await fetchData(
-                `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${country}?lastdays=56&fullData=false`
-              );
-              type = externalData.timeline;
-            }
-          } else {
-            if (country === 'worldwide') {
-              externalData = await fetchData(
-                `https://disease.sh/v3/covid-19/historical/all?lastdays=56`
-              );
-              type = externalData[casesType];
-            } else {
-              externalData = await fetchData(
-                `https://disease.sh/v3/covid-19/historical/${country}?lastdays=56`
-              );
-              console.log(externalData);
-              type = externalData?.timeline[casesType];
-            }
-          }
-          for (let i = 0; i < 7; i++) {
-            fullData[i] = [];
-            labels[i] = [];
-          }
-          
-          for (const day in type) {
-            let newDay = new Intl.DateTimeFormat('PL-pl', {day: '2-digit', month: '2-digit'}).format(new Date(day));
-            console.log(newDay);
-            fullData[innerArrayIndicator].push(type[day]);
-            labels[innerArrayIndicator].push(newDay);
-            if(fullData[innerArrayIndicator].length === 8) innerArrayIndicator++;
-          }
-          console.log(fullData);
-          for (let i = 0; i < fullData.length; i++) {
-  
-            for (let j = 0; j < fullData[i].length - 1; j++) {
-              sum += fullData[i][j+1] - fullData[i][j];
-            }
-            barCases.push(sum);
-            sum = 0;
-          }
-
-          for (let i = 0; i < labels.length; i++) {
-            labels[i].shift();
-            labels[i].splice(1, 5);
-            labels[i] = labels[i].join(' - ');
-          }
-          console.log("LABELS >>>", labels);
-          setData(barCases);
-          setLabels(labels);
-        }
       } catch (err) {
         console.error(err);
       }
