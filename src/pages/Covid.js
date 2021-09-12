@@ -408,10 +408,6 @@ function Covid() {
             {countryData.todayCases && (
               <ChartBar
                 casesType={casesType}
-                todayCases={countryData.todayCases}
-                todayDeaths={countryData.todayDeaths}
-                todayRecovered={countryData.todayRecovered}
-                todayVaccinated={countryData.todayVaccinated}
                 country={country}
                 period="Dane dziennie"
                 daily
@@ -424,13 +420,9 @@ function Covid() {
             {countryData.todayCases && (
               <ChartBar
                 casesType={casesType}
-                todayCases={countryData.todayCases}
-                todayDeaths={countryData.todayDeaths}
-                todayRecovered={countryData.todayRecovered}
-                todayVaccinated={countryData.todayVaccinated}
                 country={country}
                 period="Dane tygodniowo"
-                weekly
+  
               />
             )}
           </div>

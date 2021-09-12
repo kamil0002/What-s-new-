@@ -21,10 +21,13 @@ const casesTypeStyle = {
   },
 };
 
+
 export const fetchData = async (url) => {
   const res = await fetch(url);
   return res.json();
 };
+
+//* NEWS PAGE
 
 export const formatArticlesData = (articles) =>
   articles.map((article) => {
@@ -42,6 +45,8 @@ export const formatArticlesData = (articles) =>
       }).format(new Date(article.publishedAt)),
     };
   });
+
+  //* COVID PAGE 
 
 export const formatThrityDaysInfo = (data) => {
   let yesterday = new Date();
@@ -174,7 +179,7 @@ const formatDailyChartData = (type) => {
 
   for (const day in type) {
     const date = new Date(day);
-    const label = new Intl.DateTimeFormat(navigator.language, {
+    let label = new Intl.DateTimeFormat(navigator.language, {
       weekday: 'short',
     }).format(date);
     label = label.charAt(0).toUpperCase() + label.slice(1);

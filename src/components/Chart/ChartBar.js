@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import numeral from 'numeral';
 import { Bar } from 'react-chartjs-2';
-import { fetchData } from './../../utils';
 import { buildChartData } from './../../utils';
 
 const options = (title) => ({
@@ -22,7 +21,7 @@ const options = (title) => ({
     tooltip: {
       callbacks: {
         label: function(context) {
-          var label = context.dataset.label || '';
+          let label = context.dataset.label || '';
 
           if (label) {
               label += ': ';
@@ -65,11 +64,12 @@ function ChartBar({
           const { labels, barCases } = data;
           setData(barCases);
           setLabels(labels);
+          
       } catch (err) {
         console.error(err);
       }
     })();
-  }, [casesType, country]);
+  }, [casesType, country, daily]);
 
   return (
     <div>
