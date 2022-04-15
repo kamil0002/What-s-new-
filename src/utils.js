@@ -21,7 +21,6 @@ const casesTypeStyle = {
   },
 };
 
-
 export const fetchData = async (url) => {
   const res = await fetch(url);
   return res.json();
@@ -35,18 +34,29 @@ export const formatArticlesData = (articles) =>
       title: `${article.title.slice(0, 85)}...`,
       description: article.description,
       link: article.url,
-      image: article.urlToImage,
+      image: article.image,
       published: new Intl.DateTimeFormat('PL-pl', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-      }).format(new Date(article.publishedAt)),
+      }).format(new Date(article.published_at)),
     };
   });
 
-  //* COVID PAGE 
+//* COVID PAGE
+
+export const createCountryDataObject = ({ cases, todayCases, deaths, todayDeaths, recovered, todayRecovered, countryInfo }) => ({
+  lat: countryInfo?.lat,
+  long: countryInfo?.long,
+  cases: cases,
+  todayCases: todayCases,
+  deaths: deaths,
+  todayDeaths: todayDeaths,
+  recovered: recovered,
+  todayRecovered: todayRecovered,
+});
 
 export const formatThrityDaysInfo = (data) => {
   let yesterday = new Date();
@@ -120,16 +130,16 @@ export const renderCircles = (data, type) => {
           </div>
           <div className={styles.countryData}>
             <h5 className={styles.countryDataInfections}>
-              Zakażenia: {numeral(country.cases).format('0,0.[00')}
+              Cases: {numeral(country.cases).format('0,0.[00')}
             </h5>
             <h5 className={styles.countryDataDeaths}>
-              Zgony: {numeral(country.deaths).format('0,0.[00')}
+              Deaths: {numeral(country.deaths).format('0,0.[00')}
             </h5>
             <h5 className={styles.countryDataRecovered}>
-              Wyzdrowiali: {numeral(country.recovered).format('0,0.[00')}
+              Recovered: {numeral(country.recovered).format('0,0.[00')}
             </h5>
             <h5 className={styles.countryDataVaccinated}>
-              Zasczepieni: {numeral(country.vaccinated).format('0,0.[00')}
+              Vaccinated: {numeral(country.vaccinated).format('0,0.[00')}
             </h5>
           </div>
         </Popup>
@@ -179,7 +189,7 @@ const formatDailyChartData = (type) => {
 
   for (const day in type) {
     const date = new Date(day);
-    let label = new Intl.DateTimeFormat(navigator.language, {
+    let label = new Intl.DateTimeFormat('EN', {
       weekday: 'short',
     }).format(date);
     label = label.charAt(0).toUpperCase() + label.slice(1);

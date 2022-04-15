@@ -20,17 +20,17 @@ const options = (title) => ({
 
     tooltip: {
       callbacks: {
-        label: function(context) {
+        label: function (context) {
           let label = context.dataset.label || '';
 
           if (label) {
-              label += ': ';
+            label += ': ';
           }
           if (context.parsed.y !== null) {
-              label += numeral(context.parsed.y).format('+0.[0,');
+            label += numeral(context.parsed.y).format('+0.[0,');
           }
           return label;
-      }
+        },
       },
     },
   },
@@ -48,23 +48,17 @@ const options = (title) => ({
   },
 });
 
-function ChartBar({
-  daily,
-  period,
-  casesType,
-  country,
-}) {
+function ChartBar({ daily, period, casesType, country }) {
   const [data, setData] = useState([]);
   const [labels, setLabels] = useState([]);
 
   useEffect(() => {
     (async () => {
       try {
-          const data = await buildChartData(casesType, country, daily);
-          const { labels, barCases } = data;
-          setData(barCases);
-          setLabels(labels);
-          
+        const data = await buildChartData(casesType, country, daily);
+        const { labels, barCases } = data;
+        setData(barCases);
+        setLabels(labels);
       } catch (err) {
         console.error(err);
       }
@@ -73,7 +67,6 @@ function ChartBar({
 
   return (
     <div>
-      {data.length > 0 && (
         <Bar
           style={{ height: '370px' }}
           data={{
@@ -105,7 +98,6 @@ function ChartBar({
           }}
           options={options(period)}
         />
-      )}
     </div>
   );
 }

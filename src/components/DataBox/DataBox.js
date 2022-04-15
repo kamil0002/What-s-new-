@@ -9,8 +9,6 @@ import ThemeContext from '../../Contexts/ThemeContext';
 
 const useStyles = makeStyles((theme) => ({
   box: {
-    // borderLeftWidth: '10px',
-    // borderLeftStyle: 'solid',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -21,8 +19,6 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
 
     [theme.breakpoints.up('sm')]: {
-      // paddingLeft: theme.spacing(3),
-      // paddingRight: theme.spacing(3),
       paddingTop: theme.spacing(1.2),
       paddingBottom: theme.spacing(1.2),
       width: '170px',

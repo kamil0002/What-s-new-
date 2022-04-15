@@ -8,7 +8,7 @@ function Table({ data }) {
 
   return ( 
     <div className={`${darkMode ? styles.wrapperDark : styles.wrapper}`}>
-      <h3 className={`${darkMode ? styles.titleDark : styles.title}`}>Dane według krajów</h3>
+      <h3 className={`${darkMode ? styles.titleDark : styles.title}`}>Data by country</h3>
       <div className={`${darkMode ? styles.globalDataDark : styles.globalData}`}>
         {data.map(({countryName, flag, cases, deaths, recovered, thirtyDaysCases, thirtyDaysDeaths, thirtyDaysRecovered}, i) => (
           <TableItem

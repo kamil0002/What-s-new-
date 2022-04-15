@@ -8,10 +8,10 @@ function RadioButtons({ onChange, casesType }) {
   return (
     <FormControl component="fieldset">
       <RadioGroup row aria-label="position" name="position" defaultValue="top" value={casesType} onChange={onChange}>
-        <RadioEl name="Zakażenia" value="cases" />
-        <RadioEl name="Zgony" value="deaths" />
-        <RadioEl name="Wyzdrowiali" value="recovered" />
-        <RadioEl name="Zaszczepieni" value="vaccinated" />
+        <RadioEl name="Cases" value="cases" />
+        <RadioEl name="Deaths" value="deaths" />
+        <RadioEl name="Recovered" value="recovered" />
+        <RadioEl name="Vaccinated" value="vaccinated" />
       </RadioGroup>
     </FormControl>
   );

@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #64b5f6;
+}
+::-webkit-scrollbar-thumb {
+  background: #0d47a1;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: lighten(#0d47a1, 15);
+}
 
 *,
 *::after,

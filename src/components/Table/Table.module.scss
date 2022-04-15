@@ -1,24 +1,7 @@
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #64b5f6;
-}
-::-webkit-scrollbar-thumb {
-  background: #0d47a1;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: lighten(#0d47a1, 15);
-}
-
 .wrapper {
   width: inehrit;
   height: 600px;
   background-color: #42a5f5;
-
-  // @media only screen and (max-width: 31.25em) {
-  //   width: 95vw;
-  // }
 }
 
 .title {

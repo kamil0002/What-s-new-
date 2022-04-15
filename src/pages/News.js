@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import NewsCard from '../components/NewsCard/NewsCard';
 import { formatArticlesData } from '../utils';
 import { fetchData } from '../utils';
+import { NEWSAPI_KEY } from '../config';
 import ThemeContext from '../Contexts/ThemeContext';
 
 const useStyles = makeStyles((theme) => {
@@ -48,16 +49,17 @@ function News() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchData('https://newsapi.org/v2/top-headlines?country=pl&apiKey=188a11c2d49b4c3faf1b90955147dd9b');
-      setArticlesData(formatArticlesData(data.articles));
-      setDisplayedArticles(formatArticlesData(data.articles.slice(0, 12)));
+      const data = await fetchData(`http://api.mediastack.com/v1/news?access_key=${NEWSAPI_KEY}&country=pl&languages=en`);
+      const sortedData = data.data.sort((a,b) => new Date(a.published_at) - new Date(b.published_at));
+      setArticlesData(formatArticlesData(sortedData));
+      setDisplayedArticles(formatArticlesData(sortedData.slice(0, 12)));
 
     })();
   }, []);
 
   const handleArticlesView = (curPage) => {
     if (curPage === 1) setDisplayedArticles(articlesData.slice(0, 12));
-    if (curPage === 2) setDisplayedArticles(articlesData.slice(12, 20));
+    if (curPage === 2) setDisplayedArticles(articlesData.slice(12, 24));
   };
 
   const handlePageChange = (_, page) => {

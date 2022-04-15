@@ -11,6 +11,7 @@ import Map from './../components/Map/Map';
 import DataBox from './../components/DataBox/DataBox';
 import RadioButtons from '../components/Radio/RadioButtons';
 import ChartBar from '../components/Chart/ChartBar';
+import { createCountryDataObject } from '../utils';
 import { formatThrityDaysInfo } from '../utils';
 import { sortData } from '../utils';
 import { formatVaccineData } from './../utils';
@@ -33,8 +34,6 @@ const wrappersBaseStyles = (theme) => ({
 const useStyles = makeStyles((theme) => {
   return {
     wrapper: {
-      // background: 'transparent',
-      // height: '100%',
       paddingTop: theme.spacing(4),
       paddingBottom: theme.spacing(7),
       backgroundColor: '#f5f5f5',
@@ -126,11 +125,11 @@ function Covid() {
   const classes = useStyles();
   const [countriesInfo, setCountriesInfo] = useState([]);
   const [countriesNames, setCountriesNames] = useState();
-  const [country, setCountry] = useState('Poland');
-  const [prevCountry, setPrevCountry] = useState('Poland');
+  const [country, setCountry] = useState('worldwide');
+  const [prevCountry, setPrevCountry] = useState('worldwide');
   const [countryData, setCountryData] = useState({});
-  const [mapCenter, setMapCenter] = useState([52, 20]);
-  const [mapZoom, setMapZoom] = useState(4);
+  const [mapCenter, setMapCenter] = useState([40.86666667, 34.56666667]);
+  const [mapZoom, setMapZoom] = useState(2);
   const [casesType, setCasesType] = useState('cases');
 
   useEffect(() => {
@@ -211,23 +210,13 @@ function Covid() {
       try {
         let countryCases = null;
         let countryVaccinated = null;
-        const data = await fetchData(
-          'https://disease.sh/v3/covid-19/countries/Poland'
-        );
-        countryCases = {
-          cases: data.cases,
-          todayCases: data.todayCases,
-          deaths: data.deaths,
-          todayDeaths: data.todayDeaths,
-          recovered: data.recovered,
-          todayRecovered: data.todayRecovered,
-        };
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        const data = await fetchData('https://disease.sh/v3/covid-19/all');
 
+        countryCases = createCountryDataObject(data);
         const newData = await fetchData(
-          'https://disease.sh/v3/covid-19/vaccine/coverage/countries/Poland'
+          'https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=3'
         );
-        countryVaccinated = formatVaccineData(newData.timeline);
+        countryVaccinated = formatVaccineData(newData);
         setCountryData({ ...countryCases, ...countryVaccinated });
       } catch (err) {
         console.error(err);
@@ -242,59 +231,39 @@ function Covid() {
     let countryCases = null;
     let countryVaccinated = null;
     if (selectedCountry === 'worldwide') {
-      fetch('https://disease.sh/v3/covid-19/all')
-        .then((response) => response.json())
-        .then((data) => {
-          countryCases = {
-            cases: data.cases,
-            todayCases: data.todayCases,
-            deaths: data.deaths,
-            todayDeaths: data.todayDeaths,
-            recovered: data.recovered,
-            todayRecovered: data.todayRecovered,
-          };
-        });
-
-      await fetch('https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=3')
-        .then((response) => response.json())
-        .then((data) => {
-          countryVaccinated = formatVaccineData(data);
-        });
+      const data = await fetchData('https://disease.sh/v3/covid-19/all');
+      countryCases = createCountryDataObject(data);
+      const newData = await fetchData(
+        'https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=3'
+      );
+      countryVaccinated = formatVaccineData(newData);
       setCountryData({ ...countryCases, ...countryVaccinated });
       setMapZoom(2);
       setMapCenter([40.86666667, 34.56666667]);
       return;
     }
 
-    await fetch(`https://disease.sh/v3/covid-19/countries/${selectedCountry}`)
-      .then((response) => response.json())
-      .then((data) => {
-        countryCases = {
-          lat: data.countryInfo.lat,
-          long: data.countryInfo.long,
-          cases: data.cases,
-          todayCases: data.todayCases,
-          deaths: data.deaths,
-          todayDeaths: data.todayDeaths,
-          recovered: data.recovered,
-          todayRecovered: data.todayRecovered,
-        };
-        setMapZoom(6);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-      });
+    const data = await fetchData(
+      `https://disease.sh/v3/covid-19/countries/${selectedCountry}`
+    );
+    countryCases = createCountryDataObject(data);
+    setMapZoom(6);
+    setMapCenter([countryCases.lat, countryCases.long]);
 
-    await fetch(
+    const newData = await fetchData(
       `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${selectedCountry}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        countryVaccinated = formatVaccineData(data.timeline);
-      });
+    );
+
+    countryVaccinated = formatVaccineData(newData.timeline);
     setCountryData({ ...countryCases, ...countryVaccinated });
   };
 
   return (
-    <Paper square elevation={0} className={darkMode ? classes.darkWrapper : classes.wrapper}>
+    <Paper
+      square
+      elevation={0}
+      className={darkMode ? classes.darkWrapper : classes.wrapper}
+    >
       <Paper className={classes.topWrapper}>
         <Grid container spacing={5} className={classes.grid}>
           <Grid
@@ -351,7 +320,7 @@ function Covid() {
                       setCasesType('cases');
                       setPrevCountry(country);
                     }}
-                    casesType="Zakażenia"
+                    casesType="Cases"
                     negativeBox
                     active={casesType === 'cases'}
                     cases={countryData.cases}
@@ -362,7 +331,7 @@ function Covid() {
                       setCasesType('deaths');
                       setPrevCountry(country);
                     }}
-                    casesType="Zgony"
+                    casesType="Deaths"
                     active={casesType === 'deaths'}
                     negativeBox
                     cases={countryData.deaths}
@@ -373,7 +342,7 @@ function Covid() {
                       setCasesType('recovered');
                       setPrevCountry(country);
                     }}
-                    casesType="Wyzdrowiali"
+                    casesType="Recovered"
                     active={casesType === 'recovered'}
                     cases={countryData.recovered}
                     todayCases={countryData.todayRecovered}
@@ -383,7 +352,7 @@ function Covid() {
                       setCasesType('vaccinated');
                       setPrevCountry(country);
                     }}
-                    casesType="Zaszczepieni"
+                    casesType="Vaccinated"
                     active={casesType === 'vaccinated'}
                     cases={countryData.vaccinated}
                     todayCases={countryData.todayVaccinated}
@@ -405,26 +374,21 @@ function Covid() {
         <div className={classes.chartWrapper}>
           {/*//* Daily */}
           <div className={classes.chart}>
-            {countryData.todayCases && (
-              <ChartBar
-                casesType={casesType}
-                country={country}
-                period="Dane dziennie"
-                daily
-              />
-            )}
+            <ChartBar
+              casesType={casesType}
+              country={country}
+              period="Daily data"
+              daily
+            />
           </div>
 
           {/*//* Weekly */}
           <div className={classes.chart}>
-            {countryData.todayCases && (
-              <ChartBar
-                casesType={casesType}
-                country={country}
-                period="Dane tygodniowo"
-  
-              />
-            )}
+            <ChartBar
+              casesType={casesType}
+              country={country}
+              period="Weekly data"
+            />
           </div>
         </div>
       </Paper>

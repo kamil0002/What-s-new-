@@ -62,7 +62,7 @@ function NewsCard({
           image={image ? image : noImg}
           title="News image"
         >
-          {props.new && <span className={classes.newBadge}>NOWE</span>}
+          {props.new && <span className={classes.newBadge}>NEW</span>}
         </CardMedia>
         <CardContent>
           <Typography gutterBottom variant="h4" component="h2">
@@ -81,7 +81,7 @@ function NewsCard({
           href={link}
           target="_blank"
         >
-          Więcej
+          More
         </Button>
         <Typography variant="subtitle2" color="textSecondary" component="p">
           {published}
